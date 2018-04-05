@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "metadata-test-pod"
+spec:
+  activeDeadlineSeconds: 3600
+  restartPolicy: Never
+  terminationGracePeriodSeconds: 10
+  containers:
+  - name: zenko-releng
+    image: {{ images.releng_kube }}
+    imagePullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+    command: ["buildbot-worker", "create-worker, "${HOME}", "${BUILDMASTER}:${BUILDMASTER_PORT}",
+                "${WORKERNAME}" "${WORKERPASS}"

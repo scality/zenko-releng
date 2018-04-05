@@ -1,0 +1,34 @@
+version: "0.2"
+
+branches:
+  user/*, feature/*, improvement/*, bugfix/*, w/*, q/*, hotfix/*:
+    stage: "pre-merge"
+stages:
+  pre-merge:
+    worker:
+      type: kubernetes
+    steps:
+    - Git: &git_pull
+        name: git pull
+        repourl: "%(prop:git_reference)s"
+        mode: full
+        method: clobber
+        shellow: 32
+        retryFetch: true
+        haltOnFailure: true
+
+    - ShellCommand:
+        name: run linter
+        command: >
+          commitlint --from master --to $CIRCLE_SHA1 -x "@commitlint/config-conventional"
+
+    - ShellCommand:
+        name: build
+        command: >
+          if [ "$CIRCLE_BRANCH" == "master" ]; then
+             export COMMIT=1
+          fi
+             make release
+             cat build/env.sh
+             echo '============'
+             cat build/release.patch || true
