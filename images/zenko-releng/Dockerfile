@@ -11,6 +11,7 @@ RUN apk add --no-cache nodejs make jq wget ca-certificates alpine-sdk python-dev
     wget -q https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kubectl -O /usr/local/bin/kubectl && \
     chmod +x /usr/local/bin/kubectl && \
     pip install ansible==2.4.3 && \
+    pip install buildbot-worker==0.9.12 && \
     apk del alpine-sdk python-dev libffi-dev openssl-dev
 
 ENV PATH $GOPATH/bin:$PATH
