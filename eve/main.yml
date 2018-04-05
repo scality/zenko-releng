@@ -1,0 +1,43 @@
+version: "0.2"
+
+branches:
+  user/*, feature/*, improvement/*, bugfix/*, w/*, q/*, hotfix/*:
+    stage: "pre-merge"
+stages:
+  pre-merge:
+    worker:
+      type: kube_pod
+      path: eve/workers/zenko.yaml
+    steps:
+    - Git: &git_pull
+        name: git pull
+        repourl: "%(prop:git_reference)s"
+        mode: full
+        method: clobber
+        retryFetch: true
+        haltOnFailure: true
+
+    - ShellCommand:
+        name: run linter
+        command: >
+          commitlint --from origin/master --to "%(prop:revision)s" -x "@commitlint/config-conventional"
+
+    - ShellCommand:
+        name: prepare release
+        command: >
+          if [ "%(prop:branch)s" == "master" ]; then
+             export COMMIT=1
+          fi
+             make release
+
+    - ShellCommand:
+        name: 'build'
+        command: make build-all
+        env: &release_vars
+          RELEASE: "1"
+          DOCKER_REGISTRY: "gcr.io/eve-dev/"
+
+#    - ShellCommand:
+#        name: publish
+#        command: make publish
+#        env: *release_vars
