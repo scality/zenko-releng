@@ -1,8 +1,8 @@
-FROM docker:17.05.0-ce-git
+FROM docker:17.09.0-ce-git
 
 ENV GOPATH /go
 
-RUN apk add --no-cache nodejs make jq wget ca-certificates alpine-sdk python-dev libffi-dev openssl-dev py2-pip go && \
+RUN apk add --no-cache nodejs make jq wget ca-certificates alpine-sdk python-dev libffi-dev openssl-dev py2-pip go curl && \
     npm install -g @commitlint/cli @commitlint/config-conventional conventional-commits-parser semver && \
     go get -u github.com/aktau/github-release && \
     wget -q https://storage.googleapis.com/kubernetes-helm/helm-v2.8.1-linux-amd64.tar.gz && \
