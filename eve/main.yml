@@ -30,14 +30,17 @@ stages:
           fi
              make release
 
+    - ShellCommand: &docker_login
+        name: login docker
+        command: docker login -u '%(secret:private_registry_username)s' -p '%(secret:private_registry_password)s' '%(secret:private_registry_url)s' 
     - ShellCommand:
         name: 'build'
         command: make build-all
         env: &release_vars
           RELEASE: "1"
-          DOCKER_REGISTRY: "gcr.io/eve-dev/"
+          DOCKER_REGISTRY: "%(secret:private_registry_url)s/zenko"
 
-#    - ShellCommand:
-#        name: publish
-#        command: make publish
-#        env: *release_vars
+    - ShellCommand:
+        name: publish
+        command: make publish
+        env: *release_vars
