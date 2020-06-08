@@ -1,4 +1,4 @@
-FROM docker:17.09.0-ce-git
+FROM docker:18.06.3-ce-git
 
 ENV HELM_VER 2.11.0
 ENV KUBECTL_VER 1.11.6
